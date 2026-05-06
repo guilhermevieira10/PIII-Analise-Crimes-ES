@@ -22,9 +22,11 @@ O projeto foi desenvolvido em **Python** utilizando o ambiente **Google Colab**.
 - **Inteligência Tática:** O Mapa de Calor identificou janelas críticas de criminalidade (ex: segundas-feiras às 19h), permitindo o direcionamento otimizado de patrulhamento.
 - **Localização:** Mapeamento dos 5 bairros com maior incidência para suporte a cercos táticos.
 
-## 🧑‍💻 Autor
+## 🧑‍💻 Grupo
 - **Guilherme Santos Vieira**
-- Estudante de Ciência da Computação - FAESA (5º Período)
+- **Davi Portugal Soares do Carmo**
+- **Gabriel Schwan Vallentim**
+- **Nicolas Andrade**
 
 ---
 *Este repositório faz parte das atividades acadêmicas do Projeto Integrador III.*
