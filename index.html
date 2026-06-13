@@ -1,0 +1,1874 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Análise de Crimes | Espírito Santo</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #080d13;
+      --panel: #101821;
+      --panel-2: #14202b;
+      --line: #263543;
+      --text: #eef5f8;
+      --muted: #92a5b4;
+      --blue: #37a2ff;
+      --cyan: #20d6c7;
+      --green: #49d17f;
+      --yellow: #f6c453;
+      --orange: #ff8b3d;
+      --red: #ff4d5d;
+      --purple: #9d7cff;
+      --shadow: 0 18px 50px rgba(0, 0, 0, .35);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(55, 162, 255, .16), transparent 28%),
+        linear-gradient(180deg, #071018 0%, #091018 38%, #070b10 100%);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      letter-spacing: 0;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, select { font: inherit; }
+
+    .app {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 24px 18px;
+      background: rgba(9, 15, 22, .9);
+      border-right: 1px solid rgba(255, 255, 255, .08);
+      backdrop-filter: blur(16px);
+      overflow: auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .mark {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      color: #031018;
+      font-weight: 900;
+      box-shadow: 0 12px 30px rgba(32, 214, 199, .25);
+    }
+
+    .brand strong { display: block; font-size: 15px; }
+    .brand span { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
+
+    .nav-title {
+      margin: 24px 10px 10px;
+      color: #6f8494;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 12px;
+      border-radius: 8px;
+      color: #c8d5de;
+      font-size: 14px;
+    }
+
+    .nav a:hover, .nav a.active {
+      background: rgba(55, 162, 255, .12);
+      color: #fff;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--cyan);
+      box-shadow: 0 0 0 4px rgba(32, 214, 199, .1);
+    }
+
+    .source-box {
+      margin-top: 24px;
+      padding: 14px;
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .04);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    main { min-width: 0; }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 28px;
+      background: rgba(8, 13, 19, .72);
+      border-bottom: 1px solid rgba(255, 255, 255, .08);
+      backdrop-filter: blur(18px);
+    }
+
+    .topbar .filters {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pill, select {
+      min-height: 36px;
+      border: 1px solid rgba(255, 255, 255, .11);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .06);
+      color: var(--text);
+      padding: 8px 12px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    select option { background: #111b24; color: #fff; }
+
+    .filter-control {
+      display: grid;
+      gap: 5px;
+      min-width: 156px;
+    }
+
+    .filter-control label {
+      color: #8094a3;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .apply-filter {
+      align-self: end;
+      min-height: 36px;
+      border: 0;
+      border-radius: 8px;
+      padding: 8px 13px;
+      background: linear-gradient(135deg, var(--cyan), var(--blue));
+      color: #041018;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .apply-filter:hover {
+      filter: brightness(1.08);
+    }
+
+    .apply-filter:active {
+      transform: translateY(1px);
+    }
+
+    .hero {
+      padding: 34px 28px 10px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, .85fr);
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .hero-copy {
+      position: relative;
+      overflow: hidden;
+      padding: 30px;
+      min-height: 310px;
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 8px;
+      background:
+        linear-gradient(90deg, rgba(5, 10, 15, .92) 0%, rgba(7, 13, 19, .75) 48%, rgba(7, 13, 19, .28) 100%),
+        url("wagner.webp") center right / cover no-repeat,
+        linear-gradient(135deg, rgba(20, 32, 43, .98), rgba(11, 20, 29, .95)),
+        repeating-linear-gradient(90deg, transparent, transparent 22px, rgba(255,255,255,.03) 23px);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-copy > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 860px;
+      font-size: clamp(34px, 5vw, 68px);
+      line-height: .98;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      max-width: 780px;
+      margin: 18px 0 0;
+      color: #bed0dc;
+      font-size: 18px;
+      line-height: 1.55;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 42px;
+      border: 0;
+      border-radius: 8px;
+      padding: 10px 15px;
+      background: var(--blue);
+      color: #031018;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .btn.secondary {
+      background: rgba(255,255,255,.08);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.12);
+    }
+
+    .panel {
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 8px;
+      background: rgba(16, 24, 33, .86);
+      box-shadow: var(--shadow);
+    }
+
+    .section {
+      padding: 26px 28px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 25px;
+      letter-spacing: 0;
+    }
+
+    .sub {
+      margin: 6px 0 0;
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 14px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .kpi {
+      padding: 18px;
+      border-left: 3px solid var(--blue);
+    }
+
+    .kpi:nth-child(2) { border-left-color: var(--cyan); }
+    .kpi:nth-child(3) { border-left-color: var(--yellow); }
+    .kpi:nth-child(4) { border-left-color: var(--red); }
+    .kpi .label { color: var(--muted); font-size: 13px; }
+    .kpi .value { margin-top: 10px; font-size: 34px; font-weight: 900; }
+    .kpi .delta { margin-top: 8px; color: #b8c7d2; font-size: 13px; }
+    .up { color: var(--red); }
+    .down { color: var(--green); }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.12fr) minmax(340px, .88fr);
+      gap: 16px;
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 16px 18px 0;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 850;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      height: 26px;
+      padding: 0 9px;
+      border-radius: 8px;
+      background: rgba(32, 214, 199, .12);
+      color: #9bf5ed;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .chart-wrap { padding: 14px 18px 18px; }
+    svg { display: block; width: 100%; height: auto; }
+    .axis, .muted { color: var(--muted); fill: var(--muted); }
+
+    .map-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 260px;
+      gap: 12px;
+      padding: 18px;
+      min-height: 452px;
+    }
+
+    .map {
+      position: relative;
+      min-height: 405px;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 8px;
+      background:
+        linear-gradient(145deg, rgba(55,162,255,.08), transparent 45%),
+        #0b141d;
+      overflow: hidden;
+    }
+
+    .geo-svg {
+      position: absolute;
+      inset: 12px;
+      width: calc(100% - 24px);
+      height: calc(100% - 24px);
+      filter: drop-shadow(0 24px 35px rgba(0,0,0,.35));
+    }
+
+    .geo-point {
+      cursor: pointer;
+      stroke: #fff;
+      stroke-width: 3;
+      filter: drop-shadow(0 0 12px rgba(255,77,93,.55));
+    }
+
+    .geo-label {
+      fill: #eef5f8;
+      font-size: 18px;
+      font-weight: 900;
+      paint-order: stroke;
+      stroke: #071018;
+      stroke-width: 5px;
+      stroke-linejoin: round;
+      pointer-events: none;
+    }
+
+    .map-credit {
+      position: absolute;
+      right: 14px;
+      bottom: 12px;
+      max-width: 52%;
+      color: #7f93a2;
+      font-size: 10px;
+      text-align: right;
+    }
+
+    .hotspot {
+      position: absolute;
+      display: grid;
+      place-items: center;
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: var(--red);
+      border: 2px solid #ffe1e5;
+      box-shadow: 0 0 0 10px rgba(255, 77, 93, .14);
+      cursor: pointer;
+    }
+
+    .hotspot.medium {
+      background: var(--yellow);
+      border-color: #fff1c6;
+      box-shadow: 0 0 0 8px rgba(246, 196, 83, .12);
+    }
+
+    .hotspot.low {
+      background: var(--cyan);
+      border-color: #d2fffb;
+      box-shadow: 0 0 0 7px rgba(32, 214, 199, .12);
+    }
+
+    .tooltip {
+      position: absolute;
+      left: 18px;
+      bottom: 18px;
+      width: calc(100% - 36px);
+      min-height: 76px;
+      padding: 12px 14px;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 8px;
+      background: rgba(6, 11, 16, .82);
+      backdrop-filter: blur(10px);
+    }
+
+    .tooltip strong { display: block; font-size: 16px; }
+    .tooltip span { display: block; margin-top: 4px; color: var(--muted); font-size: 13px; }
+
+    .rank-list {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .rank-row {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr) 44px;
+      gap: 9px;
+      align-items: center;
+      min-height: 43px;
+      padding: 8px 10px;
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 8px;
+      background: rgba(255,255,255,.035);
+    }
+
+    .rank-row b { color: #fff; }
+    .rank-row span { color: var(--muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .rank-row strong { text-align: right; }
+
+    .two-cols {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .three-cols {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .insight {
+      padding: 18px;
+      min-height: 150px;
+    }
+
+    .insight b {
+      display: block;
+      margin-bottom: 9px;
+      color: #fff;
+      font-size: 16px;
+    }
+
+    .insight p {
+      margin: 0;
+      color: #b8c7d2;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .pyramid {
+      display: grid;
+      gap: 8px;
+      padding: 18px;
+    }
+
+    .pyr-row {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 50px;
+      margin-inline: auto;
+      border-radius: 8px;
+      color: #061018;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .pyr-row span {
+      display: block;
+      color: rgba(6,16,24,.78);
+      font-size: 12px;
+      font-weight: 800;
+      margin-top: 2px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th, td {
+      padding: 12px 10px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      text-align: left;
+    }
+
+    th {
+      color: #9fb2c0;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    td:last-child, th:last-child { text-align: right; }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 3px 8px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .status.high { background: rgba(255,77,93,.15); color: #ffb3bb; }
+    .status.mid { background: rgba(246,196,83,.15); color: #ffe09a; }
+    .status.low { background: rgba(73,209,127,.15); color: #a9f2c5; }
+
+    .notebook-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .mini-kpis {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .mini-kpi {
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 8px;
+      background: rgba(255,255,255,.04);
+    }
+
+    .mini-kpi span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 7px;
+    }
+
+    .mini-kpi b {
+      display: block;
+      font-size: 24px;
+      color: #fff;
+    }
+
+    .matrix {
+      display: grid;
+      grid-template-columns: 95px repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      padding: 18px;
+    }
+
+    .matrix div {
+      min-height: 54px;
+      border-radius: 8px;
+      padding: 10px;
+      background: rgba(255,255,255,.05);
+      color: #c8d5de;
+      font-size: 13px;
+      display: grid;
+      align-content: center;
+    }
+
+    .matrix .head {
+      color: #fff;
+      font-weight: 900;
+      background: rgba(55,162,255,.14);
+    }
+
+    .matrix .risk-high { background: rgba(255,77,93,.23); color: #ffd7dc; }
+    .matrix .risk-mid { background: rgba(246,196,83,.2); color: #fff0bd; }
+    .matrix .risk-low { background: rgba(73,209,127,.17); color: #c7f6d9; }
+
+    .timeline {
+      display: grid;
+      gap: 12px;
+      padding: 18px;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 96px minmax(0, 1fr) 86px;
+      gap: 12px;
+      align-items: center;
+      min-height: 58px;
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 8px;
+      background: rgba(255,255,255,.035);
+    }
+
+    .step time {
+      color: #9bf5ed;
+      font-weight: 900;
+      font-size: 13px;
+    }
+
+    .step p {
+      margin: 0;
+      color: #c7d4dd;
+      font-size: 14px;
+    }
+
+    .step strong {
+      text-align: right;
+      font-size: 12px;
+      color: #fff;
+    }
+
+    .notebook-shot {
+      overflow: hidden;
+    }
+
+    .notebook-shot img {
+      display: block;
+      width: 100%;
+      height: 210px;
+      object-fit: contain;
+      background: #fff;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .notebook-shot div { padding: 13px 14px; }
+    .notebook-shot b { display: block; margin-bottom: 4px; }
+    .notebook-shot span { color: var(--muted); font-size: 13px; }
+
+    footer {
+      padding: 28px;
+      color: var(--muted);
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+
+    @media (max-width: 1100px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar {
+        position: relative;
+        height: auto;
+        border-right: 0;
+        border-bottom: 1px solid rgba(255,255,255,.08);
+      }
+      .nav { display: flex; gap: 8px; flex-wrap: wrap; }
+      .nav-title, .source-box { display: none; }
+      .hero-grid, .dashboard-grid, .map-card, .two-cols, .three-cols { grid-template-columns: 1fr; }
+      .grid-4, .mini-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .notebook-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 620px) {
+      .topbar { align-items: stretch; flex-direction: column; padding: 16px; }
+      .hero, .section { padding-inline: 16px; }
+      .hero-copy { padding: 20px; }
+      .grid-4, .mini-kpis { grid-template-columns: 1fr; }
+      .card-head, .section-header { align-items: start; flex-direction: column; }
+      .map { min-height: 360px; }
+      .map-credit { max-width: 72%; }
+      .matrix { grid-template-columns: 1fr; }
+      .step { grid-template-columns: 1fr; }
+      .step strong { text-align: left; }
+      h1 { font-size: 38px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="mark">ES</div>
+        <div>
+          <strong>Observatório Criminal</strong>
+          <span>Espírito Santo | MVP acadêmico</span>
+        </div>
+      </div>
+
+      <div class="nav-title">Painéis</div>
+      <nav class="nav">
+        <a class="active" href="#visao"><span class="dot"></span>Visão geral</a>
+        <a href="#mapa"><span class="dot"></span>Mapa de risco</a>
+        <a href="#patrimonio"><span class="dot"></span>Patrimônio</a>
+        <a href="#vida"><span class="dot"></span>Crimes contra a vida</a>
+        <a href="#mobilidade"><span class="dot"></span>Mobilidade</a>
+        <a href="#ciberneticos"><span class="dot"></span>Crimes informáticos</a>
+        <a href="#detalhado"><span class="dot"></span>Detalhamento</a>
+        <a href="#armas"><span class="dot"></span>Armas</a>
+        <a href="#metodologia"><span class="dot"></span>Metodologia</a>
+      </nav>
+
+      <div class="nav-title">Referência</div>
+      <div class="source-box">
+        Layout inspirado no Observatório da Segurança Pública da SESP/ES, com identidade visual escura e conteúdo adaptado para apresentação do projeto interdisciplinar.
+      </div>
+    </aside>
+
+    <main>
+      <div class="topbar">
+        <div>
+          <strong>Painel de decisão</strong>
+          <div class="sub">Base principal: roubos 2024 analisados no notebook PIII.ipynb</div>
+        </div>
+        <div class="filters">
+          <div class="filter-control">
+            <label for="cityFilter">Município</label>
+            <select id="cityFilter" aria-label="Filtro de município">
+              <option value="Todos">Todos os municípios</option>
+              <option value="Serra">Serra</option>
+              <option value="Vila Velha">Vila Velha</option>
+              <option value="Cariacica">Cariacica</option>
+              <option value="Vitória">Vitória</option>
+              <option value="Linhares">Linhares</option>
+              <option value="Guarapari">Guarapari</option>
+            </select>
+          </div>
+          <div class="filter-control">
+            <label for="periodFilter">Período</label>
+            <select id="periodFilter" aria-label="Filtro de período">
+              <option value="2024">2024</option>
+              <option value="2023-2024">2023-2024</option>
+              <option value="2020-2024">2020-2024</option>
+              <option value="2025">2025 parcial</option>
+            </select>
+          </div>
+          <button class="apply-filter" id="applyFilter" type="button">Aplicar</button>
+          <span class="pill" id="filterStatus">Todos · 2024</span>
+        </div>
+      </div>
+
+      <section class="hero" id="visao">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <h1>Análise de Crimes</h1>
+            <p class="lead">Sistema web para transformar microdados de segurança pública em indicadores, mapas, comparações estatísticas e insights acionáveis para tomada de decisão.</p>
+            <div class="hero-actions">
+              <a class="btn" href="#mapa">Ver mapa</a>
+              <a class="btn secondary" href="#metodologia">Metodologia</a>
+            </div>
+          </div>
+          <div class="panel pyramid" aria-label="Pirâmide de priorização">
+            <div class="card-head" style="padding:0 0 8px">
+              <h2 style="font-size:18px">Pirâmide de prioridade</h2>
+              <span class="tag">MVP final</span>
+            </div>
+            <div class="pyr-row" style="width:48%; background:var(--red)">Alta urgência<span>Hotspots urbanos</span></div>
+            <div class="pyr-row" style="width:64%; background:var(--orange)">Prevenção direcionada<span>Dias e horários críticos</span></div>
+            <div class="pyr-row" style="width:80%; background:var(--yellow)">Monitoramento contínuo<span>Municípios e bairros</span></div>
+            <div class="pyr-row" style="width:96%; background:var(--cyan)">Base analítica<span>Dados limpos + KPIs</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="grid-4">
+          <article class="panel kpi">
+            <div class="label">Registros válidos analisados</div>
+            <div class="value">13.506</div>
+            <div class="delta">Roubos 2024 após limpeza da base</div>
+          </article>
+          <article class="panel kpi">
+            <div class="label">Média diária em Serra</div>
+            <div class="value">9,56</div>
+            <div class="delta"><span class="up">+27,8%</span> vs. Vila Velha</div>
+          </article>
+          <article class="panel kpi">
+            <div class="label">Média diária em Vila Velha</div>
+            <div class="value">7,48</div>
+            <div class="delta">2ª cidade com mais roubos no notebook</div>
+          </article>
+          <article class="panel kpi">
+            <div class="label">Teste estatístico</div>
+            <div class="value">p&lt;0,05</div>
+            <div class="delta"><span class="down">Diferença significativa</span></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <h2>Visão Geral por Eixos</h2>
+            <p class="sub">Resumo executivo para mostrar que o MVP cobre patrimônio, crimes contra a vida, mobilidade urbana e metodologia de ciência de dados.</p>
+          </div>
+          <span class="tag">Resumo do projeto</span>
+        </div>
+        <div class="dashboard-grid">
+          <article class="panel">
+            <div class="card-head">
+              <h3 class="card-title">Peso analítico dos módulos</h3>
+              <span class="tag">Dashboard</span>
+            </div>
+            <div class="chart-wrap">
+              <svg id="overviewAxes" viewBox="0 0 760 300" aria-label="Eixos analíticos do projeto"></svg>
+            </div>
+          </article>
+          <article class="panel">
+            <div class="card-head">
+              <h3 class="card-title">O que cada eixo entrega</h3>
+              <span class="tag">MVP</span>
+            </div>
+            <div class="chart-wrap">
+              <table>
+                <thead>
+                  <tr><th>Eixo</th><th>Visualização</th><th>Decisão</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Patrimônio</td><td>Teste T, heatmap e ranking</td><td>Priorizar hotspots</td></tr>
+                  <tr><td>Vida</td><td>Série histórica e ranking CVLI</td><td>Monitorar letalidade</td></tr>
+                  <tr><td>Mobilidade</td><td>Donut de risco e tabela</td><td>Proteger deslocamentos</td></tr>
+                  <tr><td>Gestão</td><td>Pipeline e cronograma</td><td>Documentar entrega</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="mapa">
+        <div class="section-header">
+          <div>
+            <h2>Mapa de Risco Operacional</h2>
+            <p class="sub">Mapa real do Estado do Espírito Santo com pontos de risco por município, ranking e leitura operacional para tomada de decisão.</p>
+          </div>
+          <span class="tag">Interativo</span>
+        </div>
+
+        <div class="panel map-card">
+          <div class="map" id="map">
+            <svg class="geo-svg" id="geoMap" viewBox="0 0 677 986" role="img" aria-label="Mapa real do Espírito Santo com pontos de risco">
+              <defs>
+                <linearGradient id="mapTint" x1="0" x2="1" y1="0" y2="1">
+                  <stop offset="0" stop-color="#37a2ff" stop-opacity=".20"/>
+                  <stop offset="1" stop-color="#20d6c7" stop-opacity=".08"/>
+                </linearGradient>
+              </defs>
+              <image href="espirito-santo-mapa.svg" x="0" y="0" width="677" height="986" opacity=".88"/>
+              <rect x="0" y="0" width="677" height="986" fill="url(#mapTint)" opacity=".30"/>
+              <g id="geoPoints"></g>
+            </svg>
+            <div class="tooltip" id="mapTip">
+              <strong>Mapa real do Espírito Santo</strong>
+              <span>Passe pelos pontos para ver indicador e leitura operacional por município.</span>
+            </div>
+            <div class="map-credit">Base cartográfica: Wikimedia Commons, arquivo "EspiritoSanto MesoMicroMunicip.svg".</div>
+          </div>
+          <div class="rank-list" id="rankList"></div>
+        </div>
+      </section>
+
+      <section class="section" id="patrimonio">
+        <div class="section-header">
+          <div>
+            <h2>Crimes Contra o Patrimônio</h2>
+            <p class="sub">Foco principal do notebook executado: distribuição diária, ranking municipal, locais de ocorrência e tendência temporal.</p>
+          </div>
+          <span class="tag">Dados reais + protótipo</span>
+        </div>
+
+        <div class="dashboard-grid">
+          <article class="panel">
+            <div class="card-head">
+              <h3 class="card-title">Comparação estatística: Serra x Vila Velha</h3>
+              <span class="tag">Teste T</span>
+            </div>
+            <div class="chart-wrap">
+              <svg id="barStats" viewBox="0 0 760 330" aria-label="Gráfico de médias diárias"></svg>
+            </div>
+          </article>
+          <article class="panel">
+            <div class="card-head">
+              <h3 class="card-title">Evolução temporal com tendência</h3>
+              <span class="tag">Média móvel</span>
+            </div>
+            <div class="chart-wrap">
+              <svg id="lineTrend" viewBox="0 0 520 330" aria-label="Série temporal"></svg>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="two-cols">
+          <article class="panel">
+            <div class="card-head">
+              <h3 class="card-title">Mapa de calor real: roubos por dia e hora</h3>
+              <span class="tag">13.506 registros</span>
+            </div>
+            <div class="chart-wrap">
+              <svg id="heatmap" viewBox="0 0 760 360" aria-label="Mapa de calor de horários"></svg>
+            </div>
+          </article>
+          <article class="panel">
+            <div class="card-head">
+              <h3 class="card-title">Tipos de local mais sensíveis</h3>
+              <span class="tag">Ocorrências</span>
+            </div>
+            <div class="chart-wrap">
+              <svg id="localBars" viewBox="0 0 640 360" aria-label="Barras por tipo de local"></svg>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="vida">
+        <div class="section-header">
+          <div>
+            <h2>Crimes Contra a Vida</h2>
+            <p class="sub">Série oficial de homicídios dolosos por município e trajetória estadual recente, extraída dos CSVs da SESP.</p>
+          </div>
+        </div>
+        <div class="mini-kpis">
+          <div class="mini-kpi"><span>Indicador principal</span><b>CVLI</b></div>
+          <div class="mini-kpi"><span>Recorte territorial</span><b>Top 8</b></div>
+          <div class="mini-kpi"><span>Modelo previsto</span><b>Pearson</b></div>
+          <div class="mini-kpi"><span>Uso decisório</span><b>Risco</b></div>
+        </div>
+        <div class="dashboard-grid">
+          <article class="panel">
+            <div class="card-head">
+              <h3 class="card-title">Série histórica de violência letal</h3>
+              <span class="tag">Dados oficiais</span>
+            </div>
+            <div class="chart-wrap">
+              <svg id="lifeTrend" viewBox="0 0 760 340" aria-label="Série histórica de violência letal"></svg>
+            </div>
+          </article>
+          <article class="panel">
+            <div class="card-head">
+              <h3 class="card-title">Ranking de atenção contra a vida</h3>
+              <span class="tag">Top municípios</span>
+            </div>
+            <div class="chart-wrap">
+              <svg id="lifeBars" viewBox="0 0 560 340" aria-label="Ranking de homicídios por município"></svg>
+            </div>
+          </article>
+        </div>
+        <div class="three-cols" style="margin-top:16px">
+          <article class="panel insight">
+            <b>Hipótese 1</b>
+            <p>Municípios com maior volume patrimonial podem demandar análise integrada com letalidade para identificar degradação urbana e disputa territorial.</p>
+          </article>
+          <article class="panel insight">
+            <b>Hipótese 2</b>
+            <p>O cruzamento entre armas apreendidas e homicídios permite medir se ações de desarmamento acompanham redução de mortes violentas.</p>
+          </article>
+          <article class="panel insight">
+            <b>Hipótese 3</b>
+            <p>Com microdados de vítimas, o painel evolui para pirâmide etária, sexo, raça/cor, local do fato e horário de maior vulnerabilidade.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="mobilidade">
+        <div class="section-header">
+          <div>
+            <h2>Mobilidade e Vulnerabilidade Urbana</h2>
+            <p class="sub">Módulo para conectar roubos em via pública, celulares, bicicletas, veículos e transporte coletivo.</p>
+          </div>
+        </div>
+        <div class="dashboard-grid">
+          <article class="panel">
+            <div class="card-head">
+              <h3 class="card-title">Composição do risco no deslocamento</h3>
+              <span class="tag">Protótipo</span>
+            </div>
+            <div class="chart-wrap">
+              <svg id="donut" viewBox="0 0 520 330" aria-label="Composição de risco"></svg>
+            </div>
+          </article>
+          <article class="panel">
+            <div class="card-head">
+              <h3 class="card-title">Tabela de decisão</h3>
+              <span class="tag">Prioridades</span>
+            </div>
+            <div class="chart-wrap">
+              <table>
+                <thead>
+                  <tr><th>Frente</th><th>Indicador</th><th>Nível</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Serra</td><td>9,56 roubos/dia</td><td><span class="status high">Alto</span></td></tr>
+                  <tr><td>Vila Velha</td><td>7,48 roubos/dia</td><td><span class="status high">Alto</span></td></tr>
+                  <tr><td>Via pública</td><td>Exposição em deslocamento</td><td><span class="status mid">Médio</span></td></tr>
+                  <tr><td>Celulares</td><td>Alvo de fácil revenda</td><td><span class="status mid">Médio</span></td></tr>
+                  <tr><td>Padronização</td><td>Municípios e bairros</td><td><span class="status low">Controle</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+        <div class="two-cols" style="margin-top:16px">
+          <article class="panel">
+            <div class="card-head">
+              <h3 class="card-title">Ônibus e transporte coletivo: municípios críticos</h3>
+              <span class="tag">1.804 registros</span>
+            </div>
+            <div class="chart-wrap">
+              <svg id="transportBars" viewBox="0 0 640 360" aria-label="Ranking de transporte coletivo"></svg>
+            </div>
+          </article>
+          <article class="panel">
+            <div class="card-head">
+              <h3 class="card-title">Horários de maior risco no transporte</h3>
+              <span class="tag">Hora do fato</span>
+            </div>
+            <div class="chart-wrap">
+              <svg id="transportHours" viewBox="0 0 640 360" aria-label="Horários de risco no transporte coletivo"></svg>
+            </div>
+          </article>
+        </div>
+        <div class="two-cols" style="margin-top:16px">
+          <article class="panel">
+            <div class="card-head">
+              <h3 class="card-title">Mapa de calor do transporte coletivo</h3>
+              <span class="tag">Dia x hora</span>
+            </div>
+            <div class="chart-wrap">
+              <svg id="transportHeatmap" viewBox="0 0 760 360" aria-label="Mapa de calor do transporte coletivo"></svg>
+            </div>
+          </article>
+          <article class="panel">
+            <div class="card-head">
+              <h3 class="card-title">Bairros e corredores críticos</h3>
+              <span class="tag">Hotspots</span>
+            </div>
+            <div class="chart-wrap">
+              <svg id="transportPlaces" viewBox="0 0 640 360" aria-label="Bairros e logradouros críticos"></svg>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="ciberneticos">
+        <div class="section-header">
+          <div>
+            <h2>Crimes Informáticos</h2>
+            <p class="sub">Recorte de 2023 e 2024 para mostrar a migração do crime para ambiente web, residência e golpes digitais.</p>
+          </div>
+          <span class="tag">2023-2024</span>
+        </div>
+        <div class="mini-kpis">
+          <div class="mini-kpi"><span>2024</span><b id="cyberKpi2024">3.874</b></div>
+          <div class="mini-kpi"><span>Jan-set 2023</span><b id="cyberKpi2023">2.008</b></div>
+          <div class="mini-kpi"><span>Município líder</span><b id="cyberTopCity">Vitória</b></div>
+          <div class="mini-kpi"><span>Local-chave</span><b>Web</b></div>
+        </div>
+        <div class="two-cols">
+          <article class="panel">
+            <div class="card-head">
+              <h3 class="card-title">Ranking de crimes informáticos</h3>
+              <span class="tag">Municípios</span>
+            </div>
+            <div class="chart-wrap">
+              <svg id="cyberBars" viewBox="0 0 640 360" aria-label="Ranking de crimes informáticos"></svg>
+            </div>
+          </article>
+          <article class="panel">
+            <div class="card-head">
+              <h3 class="card-title">Locais mais informados</h3>
+              <span class="tag">Tipo de local</span>
+            </div>
+            <div class="chart-wrap">
+              <svg id="cyberLocals" viewBox="0 0 640 360" aria-label="Locais de crimes informáticos"></svg>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="detalhado">
+        <div class="section-header">
+          <div>
+            <h2>Patrimônio Detalhado</h2>
+            <p class="sub">Comparação dos principais alvos patrimoniais: celulares, veículos, residências, comércio e furtos gerais.</p>
+          </div>
+          <span class="tag">2020-2024</span>
+        </div>
+        <div class="dashboard-grid">
+          <article class="panel">
+            <div class="card-head">
+              <h3 class="card-title">Celulares: municípios mais atingidos</h3>
+              <span class="tag">Furto + roubo</span>
+            </div>
+            <div class="chart-wrap">
+              <svg id="cellBars" viewBox="0 0 640 360" aria-label="Ranking de celulares"></svg>
+            </div>
+          </article>
+          <article class="panel">
+            <div class="card-head">
+              <h3 class="card-title">Veículos, residências e comércio</h3>
+              <span class="tag">Top 1 por eixo</span>
+            </div>
+            <div class="chart-wrap">
+              <svg id="propertyCompare" viewBox="0 0 640 360" aria-label="Comparação patrimonial detalhada"></svg>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="armas">
+        <div class="section-header">
+          <div>
+            <h2>Armas de Fogo Apreendidas</h2>
+            <p class="sub">Leitura complementar para crimes contra a vida: onde se apreende mais, quais tipos predominam e como o volume evoluiu entre 2020 e 2024.</p>
+          </div>
+          <span class="tag">19.788 registros</span>
+        </div>
+        <div class="mini-kpis">
+          <div class="mini-kpi"><span>Total analisado</span><b id="armsKpiRows">19.788</b></div>
+          <div class="mini-kpi"><span>Município líder</span><b id="armsKpiCity">Serra</b></div>
+          <div class="mini-kpi"><span>Tipo principal</span><b id="armsKpiType">Revólver</b></div>
+          <div class="mini-kpi"><span>Calibre principal</span><b id="armsKpiCalibre">.38</b></div>
+        </div>
+        <div class="three-cols">
+          <article class="panel">
+            <div class="card-head">
+              <h3 class="card-title">Municípios com mais apreensões</h3>
+              <span class="tag">Top 8</span>
+            </div>
+            <div class="chart-wrap">
+              <svg id="armsCities" viewBox="0 0 640 360" aria-label="Municípios com mais armas apreendidas"></svg>
+            </div>
+          </article>
+          <article class="panel">
+            <div class="card-head">
+              <h3 class="card-title">Tipos de arma</h3>
+              <span class="tag">Perfil</span>
+            </div>
+            <div class="chart-wrap">
+              <svg id="armsTypes" viewBox="0 0 640 360" aria-label="Tipos de arma apreendida"></svg>
+            </div>
+          </article>
+          <article class="panel">
+            <div class="card-head">
+              <h3 class="card-title">Evolução anual</h3>
+              <span class="tag">2020-2024</span>
+            </div>
+            <div class="chart-wrap">
+              <svg id="armsYears" viewBox="0 0 640 360" aria-label="Evolução anual de armas apreendidas"></svg>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <h2>Insights para Apresentação</h2>
+            <p class="sub">Matriz de leitura para transformar análise em decisão: onde agir, quando agir e qual evidência sustenta a recomendação.</p>
+          </div>
+        </div>
+        <div class="dashboard-grid">
+          <article class="panel">
+            <div class="card-head">
+              <h3 class="card-title">Matriz insight x decisão</h3>
+              <span class="tag">Banca</span>
+            </div>
+            <div class="matrix">
+              <div></div><div class="head">Evidência</div><div class="head">Leitura</div><div class="head">Ação sugerida</div>
+              <div class="head">Serra</div><div class="risk-high">9,56 roubos/dia</div><div class="risk-high">Diferença estatística relevante</div><div class="risk-high">Priorizar patrulhamento orientado por horário</div>
+              <div class="head">Vila Velha</div><div class="risk-mid">7,48 roubos/dia</div><div class="risk-mid">Segundo maior polo da amostra</div><div class="risk-mid">Comparar bairros e locais de ocorrência</div>
+              <div class="head">Tempo</div><div class="risk-high">Heatmap dia x hora</div><div class="risk-high">Risco concentrado em janelas específicas</div><div class="risk-high">Escala operacional por faixa horária</div>
+              <div class="head">Sociedade</div><div class="risk-low">Dados públicos claros</div><div class="risk-low">Mais transparência e prevenção</div><div class="risk-low">Dashboard aberto no GitHub</div>
+            </div>
+          </article>
+          <article class="panel">
+            <div class="card-head">
+              <h3 class="card-title">Narrativa pronta para o vídeo</h3>
+              <span class="tag">3 pontos</span>
+            </div>
+            <div class="chart-wrap">
+              <table>
+                <thead>
+                  <tr><th>Momento</th><th>Mensagem</th><th>Prova</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Problema</td><td>Dados existem, mas são difíceis de ler</td><td>Painel inspirado na SESP</td></tr>
+                  <tr><td>Análise</td><td>Serra e Vila Velha têm médias diferentes</td><td>Teste T, p&lt;0,05</td></tr>
+                  <tr><td>Solução</td><td>Mapa, KPIs e heatmap orientam decisão</td><td>MVP web navegável</td></tr>
+                  <tr><td>Impacto</td><td>População e gestores ganham leitura rápida</td><td>Indicadores e ranking</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="metodologia">
+        <div class="section-header">
+          <div>
+            <h2>Metodologia e Entregas</h2>
+            <p class="sub">Alinhamento direto com os requisitos do projeto interdisciplinar.</p>
+          </div>
+        </div>
+        <div class="dashboard-grid">
+          <article class="panel">
+            <div class="card-head">
+              <h3 class="card-title">Pipeline técnico</h3>
+              <span class="tag">Ciência de dados</span>
+            </div>
+            <div class="timeline">
+              <div class="step"><time>01</time><p>Coleta das bases abertas da SESP e organização por tema: vida, patrimônio e mobilidade.</p><strong>Dados</strong></div>
+              <div class="step"><time>02</time><p>Tratamento de encoding, datas, municípios, bairros, registros nulos e padronização de colunas.</p><strong>ETL</strong></div>
+              <div class="step"><time>03</time><p>Criação de KPIs, séries temporais, rankings, heatmaps e teste estatístico entre municípios.</p><strong>Análise</strong></div>
+              <div class="step"><time>04</time><p>Publicação do MVP web com painéis, relatório visual e documentação técnica no GitHub.</p><strong>Produto</strong></div>
+            </div>
+          </article>
+          <article class="panel">
+            <div class="card-head">
+              <h3 class="card-title">Cronograma das entregas</h3>
+              <span class="tag">Requisitos</span>
+            </div>
+            <div class="chart-wrap">
+              <table>
+                <thead>
+                  <tr><th>Entrega</th><th>Conteúdo</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Entrega 1</td><td>Escopo, justificativa, metodologia e sociedade impactada</td><td><span class="status low">Documento</span></td></tr>
+                  <tr><td>Entrega 2</td><td>Protótipo funcional, telas e análise preliminar</td><td><span class="status mid">Protótipo</span></td></tr>
+                  <tr><td>Entrega 3</td><td>MVP final, demonstração completa e documentação técnica</td><td><span class="status high">MVP</span></td></tr>
+                  <tr><td>GitHub</td><td>Código-fonte, notebook, README e vídeo demonstrativo</td><td><span class="status low">Avaliação</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <footer>
+        Projeto acadêmico de ciência de dados e desenvolvimento web. Os indicadores numéricos principais foram extraídos do notebook PIII.ipynb; módulos sem base bruta local aparecem como protótipo visual para evolução no GitHub.
+      </footer>
+    </main>
+  </div>
+
+  <script src="dashboard-data.js"></script>
+  <script>
+    const fmt = new Intl.NumberFormat('pt-BR');
+    const APP = window.APP_DATA || { municipios: [], insights: {} };
+    const DATA = APP.insights || {};
+    const rankData = (DATA.topRoubosCities || []).map(row => [row.name, row.value, 'Ranking real de roubos 2024']);
+
+    function el(name, attrs = {}, children = []) {
+      const node = document.createElementNS('http://www.w3.org/2000/svg', name);
+      Object.entries(attrs).forEach(([k, v]) => node.setAttribute(k, v));
+      children.forEach(child => node.appendChild(child));
+      return node;
+    }
+
+    function text(x, y, value, attrs = {}) {
+      const node = el('text', { x, y, ...attrs });
+      node.textContent = value;
+      return node;
+    }
+
+    function drawBars() {
+      const svg = document.getElementById('barStats');
+      const data = [{name:'Serra', value:9.56, color:'#ff4d5d'}, {name:'Vila Velha', value:7.48, color:'#37a2ff'}];
+      svg.innerHTML = '';
+      svg.appendChild(text(40, 42, 'Média diária de roubos', {fill:'#eef5f8', 'font-size':22, 'font-weight':800}));
+      svg.appendChild(text(40, 68, 'Resultado do notebook: t = 7,21 e valor-p = 0,0000', {fill:'#92a5b4', 'font-size':14}));
+      const max = 11;
+      data.forEach((d, i) => {
+        const x = 90 + i * 260;
+        const h = d.value / max * 185;
+        const y = 270 - h;
+        svg.appendChild(el('rect', {x, y, width:150, height:h, rx:8, fill:d.color, opacity:.92}));
+        svg.appendChild(text(x + 75, y - 16, d.value.toFixed(2).replace('.', ','), {fill:'#fff', 'font-size':28, 'font-weight':900, 'text-anchor':'middle'}));
+        svg.appendChild(text(x + 75, 302, d.name, {fill:'#c8d5de', 'font-size':16, 'font-weight':800, 'text-anchor':'middle'}));
+      });
+      for (let i = 0; i <= 5; i++) {
+        const y = 270 - i * 37;
+        svg.appendChild(el('line', {x1:40, x2:700, y1:y, y2:y, stroke:'#263543', 'stroke-width':1}));
+      }
+    }
+
+    function drawLine() {
+      const svg = document.getElementById('lineTrend');
+      svg.innerHTML = '';
+      const values = [7,8,10,9,11,8,10,12,9,7,8,10,13,12,11,9,8,10,11,12,10,9,8,9];
+      const avg = values.map((_, i) => {
+        const start = Math.max(0, i - 3);
+        const slice = values.slice(start, i + 1);
+        return slice.reduce((a,b)=>a+b,0) / slice.length;
+      });
+      const x0 = 48, y0 = 270, w = 420, h = 190, max = 14;
+      svg.appendChild(text(30, 38, 'Tendência diária', {fill:'#eef5f8', 'font-size':20, 'font-weight':800}));
+      [0,1,2,3,4].forEach(i => {
+        const y = y0 - i * h / 4;
+        svg.appendChild(el('line', {x1:x0, x2:x0+w, y1:y, y2:y, stroke:'#263543'}));
+      });
+      function pathFor(arr) {
+        return arr.map((v, i) => {
+          const x = x0 + i * (w / (arr.length - 1));
+          const y = y0 - v / max * h;
+          return `${i ? 'L' : 'M'} ${x} ${y}`;
+        }).join(' ');
+      }
+      svg.appendChild(el('path', {d:pathFor(values), fill:'none', stroke:'#718291', 'stroke-width':2, opacity:.55}));
+      svg.appendChild(el('path', {d:pathFor(avg), fill:'none', stroke:'#ff4d5d', 'stroke-width':4, 'stroke-linecap':'round'}));
+      svg.appendChild(text(52, 305, 'Jan', {fill:'#92a5b4', 'font-size':12}));
+      svg.appendChild(text(420, 305, 'Dez', {fill:'#92a5b4', 'font-size':12}));
+    }
+
+    function drawHeatmap() {
+      const svg = document.getElementById('heatmap');
+      svg.innerHTML = '';
+      const days = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+      const hours = ['0h','3h','6h','9h','12h','15h','18h','21h'];
+      const vals = [
+        [2,1,2,4,5,6,9,8],
+        [1,2,2,5,6,7,10,8],
+        [2,1,3,4,6,8,11,9],
+        [1,2,3,5,7,8,12,10],
+        [2,2,3,6,8,9,14,13],
+        [3,2,2,5,7,10,13,12],
+        [2,1,2,4,6,8,10,9]
+      ];
+      const colors = ['#13202a','#193446','#235570','#2d7e95','#f6c453','#ff8b3d','#ff4d5d'];
+      const x0 = 72, y0 = 50, cw = 74, ch = 36;
+      days.forEach((d, r) => svg.appendChild(text(22, y0 + r*ch + 24, d, {fill:'#92a5b4','font-size':13})));
+      hours.forEach((h, c) => svg.appendChild(text(x0 + c*cw + 26, 32, h, {fill:'#92a5b4','font-size':13,'text-anchor':'middle'})));
+      vals.forEach((row, r) => row.forEach((v, c) => {
+        const idx = Math.min(colors.length - 1, Math.floor(v / 2.1));
+        svg.appendChild(el('rect', {x:x0+c*cw, y:y0+r*ch, width:cw-5, height:ch-5, rx:7, fill:colors[idx]}));
+        svg.appendChild(text(x0+c*cw+34, y0+r*ch+22, v, {fill:'#fff','font-size':12,'font-weight':800,'text-anchor':'middle'}));
+      }));
+      svg.appendChild(text(72, 335, 'Leitura: maior concentração no fim da tarde/noite, especialmente quinta a sábado.', {fill:'#b8c7d2','font-size':14}));
+    }
+
+    function drawLocalBars() {
+      const svg = document.getElementById('localBars');
+      svg.innerHTML = '';
+      const data = [
+        ['Via pública', 100, '#ff4d5d'],
+        ['Comércio', 71, '#ff8b3d'],
+        ['Residência', 54, '#f6c453'],
+        ['Transporte', 43, '#37a2ff'],
+        ['Outros', 31, '#20d6c7']
+      ];
+      data.forEach((d, i) => {
+        const y = 48 + i * 55;
+        svg.appendChild(text(28, y + 18, d[0], {fill:'#d9e5ec','font-size':15,'font-weight':750}));
+        svg.appendChild(el('rect', {x:150, y:y, width:390, height:26, rx:8, fill:'#172430'}));
+        svg.appendChild(el('rect', {x:150, y:y, width:390*d[1]/100, height:26, rx:8, fill:d[2]}));
+        svg.appendChild(text(560, y + 19, d[1] + '%', {fill:'#fff','font-size':14,'font-weight':800,'text-anchor':'end'}));
+      });
+    }
+
+    function drawDonut() {
+      const svg = document.getElementById('donut');
+      svg.innerHTML = '';
+      const data = [
+        ['Celular', 42, '#37a2ff'],
+        ['Via pública', 28, '#ff4d5d'],
+        ['Bicicleta', 16, '#20d6c7'],
+        ['Veículo', 14, '#f6c453']
+      ];
+      const cx = 160, cy = 160, r = 95, sw = 34;
+      let start = -Math.PI / 2;
+      data.forEach(d => {
+        const angle = d[1] / 100 * Math.PI * 2;
+        const end = start + angle;
+        const x1 = cx + r * Math.cos(start), y1 = cy + r * Math.sin(start);
+        const x2 = cx + r * Math.cos(end), y2 = cy + r * Math.sin(end);
+        const large = angle > Math.PI ? 1 : 0;
+        svg.appendChild(el('path', {
+          d:`M ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2}`,
+          fill:'none',
+          stroke:d[2],
+          'stroke-width':sw,
+          'stroke-linecap':'round'
+        }));
+        start = end;
+      });
+      svg.appendChild(text(cx, cy - 4, 'Risco', {fill:'#eef5f8','font-size':24,'font-weight':900,'text-anchor':'middle'}));
+      svg.appendChild(text(cx, cy + 22, 'mobilidade', {fill:'#92a5b4','font-size':13,'text-anchor':'middle'}));
+      data.forEach((d, i) => {
+        const y = 82 + i * 42;
+        svg.appendChild(el('rect', {x:315, y:y-14, width:14, height:14, rx:3, fill:d[2]}));
+        svg.appendChild(text(340, y-2, `${d[0]} ${d[1]}%`, {fill:'#d9e5ec','font-size':15,'font-weight':750}));
+      });
+    }
+
+    function drawGeoMap() {
+      const group = document.getElementById('geoPoints');
+      if (!group) return;
+      group.innerHTML = '';
+      const bounds = { north: -17.75, south: -21.41, west: -42.02, east: -39.5 };
+      const points = [
+        {city:'São Mateus', lat:-18.716, lon:-39.859, risk:'Médio', value:'eixo norte', color:'#f6c453', info:'Município estratégico no norte do ES; bom para comparar interior e litoral.'},
+        {city:'Linhares', lat:-19.394, lon:-40.064, risk:'Médio', value:'910 registros', color:'#f6c453', info:'Eixo norte: monitorar crimes patrimoniais em corredores viários.'},
+        {city:'Colatina', lat:-19.539, lon:-40.631, risk:'Baixo', value:'risco moderado', color:'#20d6c7', info:'Interior: referência para comparação regional e controle.'},
+        {city:'Serra', lat:-20.128, lon:-40.308, risk:'Alto', value:'9,56 roubos/dia', color:'#ff4d5d', info:'Maior média diária observada no notebook PIII.ipynb.'},
+        {city:'Vitória', lat:-20.315, lon:-40.313, risk:'Alto', value:'fluxo urbano', color:'#ff4d5d', info:'Capital: alta densidade urbana e grande deslocamento diário.'},
+        {city:'Vila Velha', lat:-20.330, lon:-40.292, risk:'Alto', value:'7,48 roubos/dia', color:'#ff4d5d', info:'Segunda cidade do teste estatístico, com diferença significativa frente à Serra.'},
+        {city:'Cariacica', lat:-20.263, lon:-40.416, risk:'Médio', value:'corredor metropolitano', color:'#ff8b3d', info:'Município estratégico para rotas metropolitanas e integração com a Grande Vitória.'},
+        {city:'Guarapari', lat:-20.667, lon:-40.498, risk:'Baixo', value:'sazonalidade', color:'#20d6c7', info:'Litoral sul: analisar períodos festivos, verão e variação turística.'},
+        {city:'Cachoeiro', lat:-20.849, lon:-41.113, risk:'Médio', value:'polo sul', color:'#f6c453', info:'Polo regional do sul do ES para análise comparativa.'}
+      ];
+      const project = p => ({
+        x: ((p.lon - bounds.west) / (bounds.east - bounds.west)) * 677,
+        y: ((bounds.north - p.lat) / (bounds.north - bounds.south)) * 986
+      });
+      const tip = document.getElementById('mapTip');
+      points.forEach((p, i) => {
+        const pos = project(p);
+        const pulse = el('circle', {cx:pos.x, cy:pos.y, r:p.risk === 'Alto' ? 22 : 17, fill:p.color, opacity:.18});
+        const dot = el('circle', {cx:pos.x, cy:pos.y, r:p.risk === 'Alto' ? 12 : 10, fill:p.color, class:'geo-point', tabindex:'0'});
+        dot.addEventListener('mouseenter', () => {
+          tip.innerHTML = `<strong>${p.city} · ${p.risk}</strong><span>${p.value}. ${p.info}</span>`;
+        });
+        dot.addEventListener('focus', () => {
+          tip.innerHTML = `<strong>${p.city} · ${p.risk}</strong><span>${p.value}. ${p.info}</span>`;
+        });
+        group.appendChild(pulse);
+        group.appendChild(dot);
+        if (['Serra','Vila Velha','Vitória','Linhares','Cachoeiro'].includes(p.city)) {
+          const labelX = pos.x + (i % 2 ? 18 : -18);
+          const anchor = i % 2 ? 'start' : 'end';
+          group.appendChild(text(labelX, pos.y - 18, p.city, {class:'geo-label', 'text-anchor':anchor}));
+        }
+      });
+    }
+
+    function drawOverviewAxes() {
+      const svg = document.getElementById('overviewAxes');
+      if (!svg) return;
+      svg.innerHTML = '';
+      const modules = [
+        {name:'Patrimônio', value:92, color:'#37a2ff', detail:'13.506 registros tratados'},
+        {name:'Vida', value:74, color:'#ff4d5d', detail:'CVLI, feminicídio e armas'},
+        {name:'Mobilidade', value:66, color:'#20d6c7', detail:'via pública, bike, celular'},
+        {name:'Gestão', value:58, color:'#f6c453', detail:'GitHub, entregas e metodologia'}
+      ];
+      svg.appendChild(text(36, 38, 'Cobertura dos módulos do MVP', {fill:'#eef5f8','font-size':22,'font-weight':850}));
+      svg.appendChild(text(36, 64, 'Leitura para apresentação: o painel conecta análise estatística, território e tomada de decisão.', {fill:'#92a5b4','font-size':14}));
+      modules.forEach((m, i) => {
+        const x = 60 + i * 170;
+        const h = m.value * 1.55;
+        const y = 230 - h;
+        svg.appendChild(el('rect', {x, y, width:96, height:h, rx:8, fill:m.color, opacity:.9}));
+        svg.appendChild(text(x + 48, y - 12, `${m.value}%`, {fill:'#fff','font-size':22,'font-weight':900,'text-anchor':'middle'}));
+        svg.appendChild(text(x + 48, 262, m.name, {fill:'#eef5f8','font-size':15,'font-weight':900,'text-anchor':'middle'}));
+        svg.appendChild(text(x + 48, 284, m.detail, {fill:'#92a5b4','font-size':11,'text-anchor':'middle'}));
+      });
+    }
+
+    function drawLifeTrend() {
+      const svg = document.getElementById('lifeTrend');
+      if (!svg) return;
+      svg.innerHTML = '';
+      const years = ['2020','2021','2022','2023','2024','2025'];
+      const homicide = [118,112,104,96,88,82];
+      const fem = [15,13,12,11,10,9];
+      const x0 = 64, y0 = 274, w = 620, h = 190, max = 130;
+      svg.appendChild(text(42, 42, 'Tendência de letalidade intencional', {fill:'#eef5f8','font-size':22,'font-weight':850}));
+      svg.appendChild(text(42, 68, 'Valores demonstrativos para receber a série histórica oficial do módulo Crimes Contra a Vida', {fill:'#92a5b4','font-size':14}));
+      [0,1,2,3,4].forEach(i => {
+        const y = y0 - i*h/4;
+        svg.appendChild(el('line', {x1:x0, x2:x0+w, y1:y, y2:y, stroke:'#263543'}));
+      });
+      function pathFor(arr) {
+        return arr.map((v, i) => {
+          const x = x0 + i * (w / (arr.length - 1));
+          const y = y0 - v / max * h;
+          return `${i ? 'L' : 'M'} ${x} ${y}`;
+        }).join(' ');
+      }
+      svg.appendChild(el('path', {d:pathFor(homicide), fill:'none', stroke:'#ff4d5d', 'stroke-width':4, 'stroke-linecap':'round'}));
+      svg.appendChild(el('path', {d:pathFor(fem), fill:'none', stroke:'#f6c453', 'stroke-width':4, 'stroke-linecap':'round'}));
+      years.forEach((yr, i) => {
+        const x = x0 + i * (w / (years.length - 1));
+        svg.appendChild(text(x, 308, yr, {fill:'#92a5b4','font-size':13,'text-anchor':'middle'}));
+      });
+      svg.appendChild(el('circle', {cx:510, cy:42, r:6, fill:'#ff4d5d'}));
+      svg.appendChild(text(522, 47, 'Homicídios dolosos', {fill:'#c8d5de','font-size':13}));
+      svg.appendChild(el('circle', {cx:510, cy:66, r:6, fill:'#f6c453'}));
+      svg.appendChild(text(522, 71, 'Feminicídios', {fill:'#c8d5de','font-size':13}));
+    }
+
+    function drawLifeBars() {
+      const svg = document.getElementById('lifeBars');
+      if (!svg) return;
+      svg.innerHTML = '';
+      const data = [
+        ['Serra', 100, '#ff4d5d'],
+        ['Vila Velha', 76, '#ff8b3d'],
+        ['Cariacica', 69, '#f6c453'],
+        ['Vitória', 63, '#37a2ff'],
+        ['Linhares', 51, '#20d6c7'],
+        ['São Mateus', 44, '#9d7cff']
+      ];
+      data.forEach((d, i) => {
+        const y = 42 + i * 44;
+        svg.appendChild(text(24, y + 17, d[0], {fill:'#d9e5ec','font-size':14,'font-weight':800}));
+        svg.appendChild(el('rect', {x:132, y:y, width:330, height:24, rx:8, fill:'#172430'}));
+        svg.appendChild(el('rect', {x:132, y:y, width:330*d[1]/100, height:24, rx:8, fill:d[2]}));
+        svg.appendChild(text(482, y + 18, d[1], {fill:'#fff','font-size':13,'font-weight':900,'text-anchor':'end'}));
+      });
+      svg.appendChild(text(24, 326, 'Índice relativo demonstrativo: substituível pelos totais oficiais por município.', {fill:'#92a5b4','font-size':13}));
+    }
+
+    function renderRanks() {
+      const root = document.getElementById('rankList');
+      root.innerHTML = '<div class="card-title">Ranking de atenção</div>';
+      rankData.forEach((row, i) => {
+        const item = document.createElement('div');
+        item.className = 'rank-row';
+        item.innerHTML = `<b>${i + 1}</b><span title="${row[2]}">${row[0]}</span><strong>${fmt.format(row[1])}</strong>`;
+        root.appendChild(item);
+      });
+    }
+
+    function wireMap() {
+      drawGeoMap();
+    }
+
+    function applyFilter() {
+      const city = document.getElementById('cityFilter').value;
+      const period = document.getElementById('periodFilter').value;
+      const status = document.getElementById('filterStatus');
+      const rows = document.querySelectorAll('.rank-row');
+      rows.forEach(row => {
+        row.style.opacity = city === 'Todos' || row.textContent.includes(city) ? '1' : '.32';
+      });
+      if (status) {
+        status.textContent = `${city} · ${period}`;
+      }
+    }
+
+    function updateActiveNav() {
+      const current = window.location.hash || '#visao';
+      document.querySelectorAll('.nav a').forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === current);
+      });
+    }
+
+    function populateMunicipios() {
+      const select = document.getElementById('cityFilter');
+      if (!select || !APP.municipios?.length) return;
+      select.innerHTML = '<option value="Todos">Todos os municípios</option>' +
+        APP.municipios.map(city => `<option value="${city}">${city}</option>`).join('');
+    }
+
+    function updateRealKpis() {
+      const values = document.querySelectorAll('.kpi .value');
+      const labels = document.querySelectorAll('.kpi .label');
+      const deltas = document.querySelectorAll('.kpi .delta');
+      if (labels[0]) labels[0].textContent = 'Roubos analisados';
+      if (labels[1]) labels[1].textContent = 'Furtos analisados';
+      if (labels[2]) labels[2].textContent = 'Transporte coletivo';
+      if (labels[3]) labels[3].textContent = 'Crimes informáticos';
+      if (values[0]) values[0].textContent = fmt.format(DATA.totalRoubos2024 || 0);
+      if (values[1]) values[1].textContent = fmt.format(DATA.totalFurtos2024 || 0);
+      if (values[2]) values[2].textContent = fmt.format(DATA.transportRows || 0);
+      if (values[3]) values[3].textContent = fmt.format(DATA.cyberRows2024 || 0);
+      if (deltas[0]) deltas[0].textContent = 'Roubos 2024 após limpeza da base';
+      if (deltas[1]) deltas[1].textContent = 'Furtos 2024 após limpeza da base';
+      if (deltas[2]) deltas[2].textContent = 'Ocorrências ligadas a ônibus/transporte coletivo';
+      if (deltas[3]) deltas[3].textContent = 'Crimes informáticos em 2024';
+      const c24 = document.getElementById('cyberKpi2024');
+      const c23 = document.getElementById('cyberKpi2023');
+      const cTop = document.getElementById('cyberTopCity');
+      if (c24) c24.textContent = fmt.format(DATA.cyberRows2024 || 0);
+      if (c23) c23.textContent = fmt.format(DATA.cyberRows2023 || 0);
+      if (cTop) cTop.textContent = DATA.cyberTopCities?.[0]?.name || 'Vitória';
+      const armsRows = document.getElementById('armsKpiRows');
+      const armsCity = document.getElementById('armsKpiCity');
+      const armsType = document.getElementById('armsKpiType');
+      const armsCalibre = document.getElementById('armsKpiCalibre');
+      if (armsRows) armsRows.textContent = fmt.format(DATA.armsRows || 0);
+      if (armsCity) armsCity.textContent = DATA.armsTopCities?.[0]?.name || 'Serra';
+      if (armsType) armsType.textContent = DATA.armsTopTypes?.[0]?.name || 'Revólver';
+      if (armsCalibre) armsCalibre.textContent = DATA.armsTopCalibres?.[0]?.name || '.38';
+    }
+
+    function drawBarList(svgId, rows, opts = {}) {
+      const svg = document.getElementById(svgId);
+      if (!svg) return;
+      if (!opts.preserve) svg.innerHTML = '';
+      const data = (rows || [])
+        .filter(d => d && d.name && !['S/i', 'S/I', 'Rua', 'Outro Local'].includes(d.name))
+        .slice(0, opts.limit || 8);
+      const colors = opts.colors || ['#ff4d5d', '#ff8b3d', '#f6c453', '#37a2ff', '#20d6c7', '#9d7cff', '#49d17f', '#92a5b4'];
+      const max = Math.max(...data.map(d => d.value), 1);
+      data.forEach((d, i) => {
+        const y = (opts.startY || 34) + i * (opts.gap || 38);
+        const label = d.name.length > 24 ? d.name.slice(0, 23) + '...' : d.name;
+        svg.appendChild(text(24, y + 16, label, {fill:'#d9e5ec','font-size':13,'font-weight':800}));
+        svg.appendChild(el('rect', {x:190, y, width:330, height:22, rx:8, fill:'#172430'}));
+        svg.appendChild(el('rect', {x:190, y, width:330*d.value/max, height:22, rx:8, fill:colors[i % colors.length]}));
+        svg.appendChild(text(548, y + 16, fmt.format(d.value), {fill:'#fff','font-size':13,'font-weight':900,'text-anchor':'end'}));
+      });
+      if (opts.note) svg.appendChild(text(24, 340, opts.note, {fill:'#92a5b4','font-size':13}));
+    }
+
+    function drawBars() {
+      const svg = document.getElementById('barStats');
+      if (!svg) return;
+      svg.innerHTML = '';
+      svg.appendChild(text(40, 42, 'Ranking real de roubos 2024', {fill:'#eef5f8','font-size':22,'font-weight':850}));
+      svg.appendChild(text(40, 68, `${fmt.format(DATA.totalRoubos2024 || 0)} registros válidos extraídos de roubos_2024.csv`, {fill:'#92a5b4','font-size':14}));
+      drawBarList('barStats', DATA.topRoubosCities || [], {startY:96, gap:34, limit:6, preserve:true});
+    }
+
+    function drawLine() {
+      const svg = document.getElementById('lineTrend');
+      if (!svg) return;
+      svg.innerHTML = '';
+      const series = DATA.monthRoubos2024?.length ? DATA.monthRoubos2024 : DATA.viaPublicaMonths || [];
+      const x0 = 44, y0 = 270, w = 430, h = 190;
+      const max = Math.max(...series.map(d => d.value), 1);
+      svg.appendChild(text(30, 38, 'Evolução mensal', {fill:'#eef5f8','font-size':20,'font-weight':850}));
+      svg.appendChild(text(30, 62, 'Roubos 2024 por mês', {fill:'#92a5b4','font-size':13}));
+      [0,1,2,3,4].forEach(i => {
+        const y = y0 - i*h/4;
+        svg.appendChild(el('line', {x1:x0, x2:x0+w, y1:y, y2:y, stroke:'#263543'}));
+      });
+      const path = series.map((d, i) => {
+        const x = x0 + i * (w / Math.max(series.length - 1, 1));
+        const y = y0 - d.value / max * h;
+        return `${i ? 'L' : 'M'} ${x} ${y}`;
+      }).join(' ');
+      svg.appendChild(el('path', {d:path, fill:'none', stroke:'#37a2ff', 'stroke-width':4, 'stroke-linecap':'round'}));
+      series.forEach((d, i) => {
+        const x = x0 + i * (w / Math.max(series.length - 1, 1));
+        if (i % 2 === 0) svg.appendChild(text(x, 305, d.name, {fill:'#92a5b4','font-size':11,'text-anchor':'middle'}));
+      });
+    }
+
+    function drawHeatmap() {
+      const svg = document.getElementById('heatmap');
+      if (!svg) return;
+      svg.innerHTML = '';
+      const rows = DATA.heatmapRoubos2024 || [];
+      const days = rows.map(r => r.day);
+      const vals = rows.map(r => r.values);
+      const hours = ['0h','3h','6h','9h','12h','15h','18h','21h'];
+      const colors = ['#13202a','#193446','#235570','#2d7e95','#f6c453','#ff8b3d','#ff4d5d'];
+      const max = Math.max(...vals.flat(), 1);
+      const x0 = 72, y0 = 50, cw = 74, ch = 36;
+      days.forEach((d, r) => svg.appendChild(text(22, y0 + r*ch + 24, d, {fill:'#92a5b4','font-size':13})));
+      hours.forEach((h, c) => svg.appendChild(text(x0 + c*cw + 26, 32, h, {fill:'#92a5b4','font-size':13,'text-anchor':'middle'})));
+      vals.forEach((row, r) => row.forEach((v, c) => {
+        const idx = Math.min(colors.length - 1, Math.floor((v / max) * (colors.length - 1)));
+        svg.appendChild(el('rect', {x:x0+c*cw, y:y0+r*ch, width:cw-5, height:ch-5, rx:7, fill:colors[idx]}));
+        svg.appendChild(text(x0+c*cw+34, y0+r*ch+22, fmt.format(v), {fill:'#fff','font-size':11,'font-weight':800,'text-anchor':'middle'}));
+      }));
+      svg.appendChild(text(72, 335, 'Cada célula soma ocorrências em blocos de 3 horas por dia da semana.', {fill:'#b8c7d2','font-size':14}));
+    }
+
+    function drawLocalBars() {
+      drawBarList('localBars', DATA.topRoubosLocais || [], {limit:6, note:'Via pública concentra a maior parte dos roubos da base 2024.'});
+    }
+
+    function drawLifeTrend() {
+      const svg = document.getElementById('lifeTrend');
+      if (!svg) return;
+      svg.innerHTML = '';
+      const series = DATA.homicideTrend || [];
+      const x0 = 64, y0 = 274, w = 620, h = 190;
+      const max = Math.max(...series.map(d => d.value), 1);
+      svg.appendChild(text(42, 42, 'Homicídios dolosos no ES', {fill:'#eef5f8','font-size':22,'font-weight':850}));
+      svg.appendChild(text(42, 68, 'Série estadual recente extraída do histórico por município', {fill:'#92a5b4','font-size':14}));
+      [0,1,2,3,4].forEach(i => {
+        const y = y0 - i*h/4;
+        svg.appendChild(el('line', {x1:x0, x2:x0+w, y1:y, y2:y, stroke:'#263543'}));
+      });
+      const path = series.map((d, i) => {
+        const x = x0 + i * (w / Math.max(series.length - 1, 1));
+        const y = y0 - d.value / max * h;
+        return `${i ? 'L' : 'M'} ${x} ${y}`;
+      }).join(' ');
+      svg.appendChild(el('path', {d:path, fill:'none', stroke:'#ff4d5d', 'stroke-width':4, 'stroke-linecap':'round'}));
+      series.forEach((d, i) => {
+        const x = x0 + i * (w / Math.max(series.length - 1, 1));
+        const y = y0 - d.value / max * h;
+        svg.appendChild(el('circle', {cx:x, cy:y, r:5, fill:'#ff4d5d'}));
+        svg.appendChild(text(x, 308, d.name, {fill:'#92a5b4','font-size':13,'text-anchor':'middle'}));
+      });
+    }
+
+    function drawLifeBars() {
+      drawBarList('lifeBars', DATA.homicideTopCities || [], {limit:7, note:'Acumulado histórico de homicídios dolosos por município.'});
+    }
+
+    function drawTransportBars() {
+      drawBarList('transportBars', DATA.transportTopCities || [], {limit:7, note:'Recorte por tipo/local ligado a transporte coletivo e ônibus.'});
+    }
+
+    function drawTransportHours() {
+      const rows = (DATA.transportHours || []).slice().sort((a,b) => b.value - a.value).slice(0, 8);
+      drawBarList('transportHours', rows, {limit:8, note:'Horários mais frequentes no recorte de transporte coletivo.'});
+    }
+
+    function drawTransportHeatmap() {
+      const svg = document.getElementById('transportHeatmap');
+      if (!svg) return;
+      svg.innerHTML = '';
+      const rows = DATA.transportHeatmap || [];
+      const days = rows.map(r => r.day);
+      const vals = rows.map(r => r.values);
+      const hours = ['0h','3h','6h','9h','12h','15h','18h','21h'];
+      const colors = ['#13202a','#193446','#235570','#2d7e95','#f6c453','#ff8b3d','#ff4d5d'];
+      const max = Math.max(...vals.flat(), 1);
+      const x0 = 72, y0 = 50, cw = 74, ch = 36;
+      svg.appendChild(text(72, 26, 'Ocorrências em ônibus/transporte coletivo por bloco de 3 horas', {fill:'#92a5b4','font-size':13}));
+      days.forEach((d, r) => svg.appendChild(text(22, y0 + r*ch + 24, d, {fill:'#92a5b4','font-size':13})));
+      hours.forEach((h, c) => svg.appendChild(text(x0 + c*cw + 26, 42, h, {fill:'#92a5b4','font-size':13,'text-anchor':'middle'})));
+      vals.forEach((row, r) => row.forEach((v, c) => {
+        const idx = Math.min(colors.length - 1, Math.floor((v / max) * (colors.length - 1)));
+        svg.appendChild(el('rect', {x:x0+c*cw, y:y0+r*ch, width:cw-5, height:ch-5, rx:7, fill:colors[idx]}));
+        svg.appendChild(text(x0+c*cw+34, y0+r*ch+22, fmt.format(v), {fill:'#fff','font-size':11,'font-weight':800,'text-anchor':'middle'}));
+      }));
+      svg.appendChild(text(72, 335, 'Serve para defender escala de policiamento nos horários mais sensíveis.', {fill:'#b8c7d2','font-size':14}));
+    }
+
+    function drawTransportPlaces() {
+      const bairros = (DATA.transportTopBairros || []).slice(0, 5).map(d => ({...d, name: `Bairro: ${d.name}`}));
+      const vias = (DATA.transportTopLogradouros || [])
+        .filter(d => d.name && !['S/i', 'S/I', 'Rua', 'Outro Local'].includes(d.name))
+        .slice(0, 5)
+        .map(d => ({...d, name: `Via: ${d.name}`}));
+      drawBarList('transportPlaces', [...bairros, ...vias], {
+        limit: 8,
+        note: 'Sem coluna de linha de ônibus: a base permite análise por bairro, via, horário e município.'
+      });
+    }
+
+    function drawCyberBars() {
+      drawBarList('cyberBars', DATA.cyberTopCities || [], {limit:8, note:'Crimes informáticos registrados em 2024.'});
+    }
+
+    function drawCyberLocals() {
+      drawBarList('cyberLocals', DATA.cyberLocals || [], {limit:8, note:'Ambiente web e residência aparecem como pontos centrais do registro.'});
+    }
+
+    function drawCellBars() {
+      drawBarList('cellBars', DATA.celularesTopCities || [], {limit:8, note:'Celular é o alvo patrimonial mais sensível para mobilidade urbana.'});
+    }
+
+    function drawPropertyCompare() {
+      const rows = [
+        {name:`Veículos: ${DATA.veiculosTopCities?.[0]?.name || '-'}`, value: DATA.veiculosTopCities?.[0]?.value || 0},
+        {name:`Residências: ${DATA.residenciasTopCities?.[0]?.name || '-'}`, value: DATA.residenciasTopCities?.[0]?.value || 0},
+        {name:`Comércio: ${DATA.comercioTopCities?.[0]?.name || '-'}`, value: DATA.comercioTopCities?.[0]?.value || 0},
+        {name:`Furtos gerais: ${DATA.topFurtosCities?.[0]?.name || '-'}`, value: DATA.topFurtosCities?.[0]?.value || 0},
+        {name:`Roubos gerais: ${DATA.topRoubosCities?.[0]?.name || '-'}`, value: DATA.topRoubosCities?.[0]?.value || 0}
+      ];
+      drawBarList('propertyCompare', rows, {limit:5, note:'Mostra o município líder em cada frente patrimonial.'});
+    }
+
+    function drawArmsCities() {
+      drawBarList('armsCities', DATA.armsTopCities || [], {limit:8, note:'Apreensões de armas de fogo por município.'});
+    }
+
+    function drawArmsTypes() {
+      drawBarList('armsTypes', DATA.armsTopTypes || [], {limit:8, note:'Revólveres e pistolas dominam o perfil de apreensão.'});
+    }
+
+    function drawArmsYears() {
+      const svg = document.getElementById('armsYears');
+      if (!svg) return;
+      svg.innerHTML = '';
+      const series = DATA.armsYears || [];
+      const max = Math.max(...series.map(d => d.value), 1);
+      const x0 = 52, y0 = 278, w = 500, h = 210;
+      series.forEach((d, i) => {
+        const x = x0 + i * 96;
+        const barH = d.value / max * h;
+        const y = y0 - barH;
+        svg.appendChild(el('rect', {x, y, width:58, height:barH, rx:8, fill:['#37a2ff','#20d6c7','#f6c453','#ff8b3d','#ff4d5d'][i % 5]}));
+        svg.appendChild(text(x + 29, y - 10, fmt.format(d.value), {fill:'#fff','font-size':13,'font-weight':900,'text-anchor':'middle'}));
+        svg.appendChild(text(x + 29, 310, d.name, {fill:'#92a5b4','font-size':13,'text-anchor':'middle'}));
+      });
+      svg.appendChild(text(28, 340, 'Volume anual de apreensões entre 2020 e 2024.', {fill:'#92a5b4','font-size':13}));
+    }
+
+    function renderRanks() {
+      const root = document.getElementById('rankList');
+      if (!root) return;
+      root.innerHTML = '<div class="card-title">Ranking real de roubos 2024</div>';
+      (rankData.length ? rankData : [['Sem dados', 0, '']]).forEach((row, i) => {
+        const item = document.createElement('div');
+        item.className = 'rank-row';
+        item.innerHTML = `<b>${i + 1}</b><span title="${row[2]}">${row[0]}</span><strong>${fmt.format(row[1])}</strong>`;
+        root.appendChild(item);
+      });
+    }
+
+    populateMunicipios();
+    updateRealKpis();
+    drawBars();
+    drawLine();
+    drawHeatmap();
+    drawLocalBars();
+    drawDonut();
+    drawOverviewAxes();
+    drawLifeTrend();
+    drawLifeBars();
+    drawTransportBars();
+    drawTransportHours();
+    drawTransportHeatmap();
+    drawTransportPlaces();
+    drawCyberBars();
+    drawCyberLocals();
+    drawCellBars();
+    drawPropertyCompare();
+    drawArmsCities();
+    drawArmsTypes();
+    drawArmsYears();
+    renderRanks();
+    wireMap();
+    document.getElementById('cityFilter').addEventListener('change', applyFilter);
+    document.getElementById('periodFilter').addEventListener('change', applyFilter);
+    document.getElementById('applyFilter').addEventListener('click', applyFilter);
+    document.querySelectorAll('.nav a').forEach(link => {
+      link.addEventListener('click', () => {
+        document.querySelectorAll('.nav a').forEach(item => item.classList.remove('active'));
+        link.classList.add('active');
+      });
+    });
+    window.addEventListener('hashchange', updateActiveNav);
+    applyFilter();
+    updateActiveNav();
+  </script>
+</body>
+</html>
